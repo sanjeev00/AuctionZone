@@ -32,7 +32,7 @@ export default class SignIn extends Component {
   }
   onSubmit(e)
   {
-    axios.post("http://localhost:5000/user/login",{username:this.state.username,password:this.state.password})
+    axios.post("/user/login",{username:this.state.username,password:this.state.password})
     .then(res=>{
       if(res.status==200)
       {

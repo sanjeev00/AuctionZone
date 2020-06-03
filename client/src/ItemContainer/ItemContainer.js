@@ -11,7 +11,7 @@ class ItemContainer extends Component {
     this.state ={
         items:[]
     }
-    axios.get('http://localhost:5000/item/').then(res=>{
+    axios.get('/item/').then(res=>{
         this.setState({items:res.data})
     })
 }

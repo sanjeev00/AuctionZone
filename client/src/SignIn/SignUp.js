@@ -87,7 +87,7 @@ export default class SignUp extends Component {
     {
     console.log(this.state.username + this.state.password)
     
-    axios.post('http://localhost:5000/user/register',{'username':this.state.username,
+    axios.post('/user/register',{'username':this.state.username,
     'password':this.state.password,'mobile':this.state.mobile,'mail':this.state.mail}).then(res=>{
         if(res.status == 200)
         console.log('registration success');

@@ -66,7 +66,7 @@ class SellerForm extends React.Component
          method: 'POST',
          body: data,
         }).then(console.log("uccess"))*/
-        axios.post("http://localhost:5000/item/new",data,{headers:{'x-auth-token':this.context.userData.token}})
+        axios.post("/item/new",data,{headers:{'x-auth-token':this.context.userData.token}})
         .then(
         (res)=>{
             console.log("success")
