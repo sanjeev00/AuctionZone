@@ -28,6 +28,13 @@ app.use('/item',itemRouter)
 app.use(fileUpload());
 app.use('/public', express.static(__dirname + '/public'));
 
+app.use(express.static('./client/build'));
+
+
 app.listen(port,()=>{
     console.log("server is running")
 })
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build",
+        "index.html"));
+});
