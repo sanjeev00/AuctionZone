@@ -11,7 +11,7 @@ import {
 function Item(props) {
     return (
       <Link to={{pathname:'item' ,state:{id:props.uid}}} >      <div className="card icard">
-          <img src={"http://localhost:5000/"+props.img} className="card-img-top" alt="..."/>
+          <img src={props.img} className="card-img-top" alt="..."/>
 
             <div className="card-body">
             <h5 className="card-title">{props.name}</h5>
