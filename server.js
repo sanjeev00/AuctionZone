@@ -27,7 +27,6 @@ app.use('/user',userRouter);
 app.use('/item',itemRouter)
 app.use(fileUpload());
 app.use('/public', express.static(__dirname + '/public'));
-
 app.use(express.static('./client/build'));
 
 
