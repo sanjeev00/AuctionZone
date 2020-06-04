@@ -10,7 +10,7 @@ class  ItemDes extends Component{
             data: {}
         }
         
-        axios.get('http://localhost:5000/item/'+this.props.uid).then(res=>{
+        axios.get('/item/'+this.props.uid).then(res=>{
         this.setState({data:res.data})
     })
     }
