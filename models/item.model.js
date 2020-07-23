@@ -22,7 +22,21 @@ const itemSchema  = new Schema({
     image:{
         type:String,
 
+    },
+    sellerId:{
+        type:String,
+        required:true
+    },
+
+    latestBid:{
+        type:Number,
+        default: 0,
+    },
+    bidOpen:{
+        type:Boolean,
+        default: true,
     }
+
 
 
 },{

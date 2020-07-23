@@ -25,17 +25,27 @@ function App() {
       console.log("refreshed")
       const checkLoggedIn = async()=>{
         let token = localStorage.getItem("auth-token");
+        setUserData({
+          token
+        })
         if(token===null){
           localStorage.setItem('auth-token',"");
           token = "";
         }
-        const tokenRes =await axios.post("/user/isTokenValid",
+        const tokenRes =await axios.post("/api/user/isTokenValid",
         null,{headers:{'x-auth-token':token}})
         if(tokenRes.data){
-          const userRes = await axios.get("/user/userData",{headers:{'x-auth-token':token}})
+          const userRes = await axios.get("/api/user/userData",{headers:{'x-auth-token':token}})
           setUserData({
             token,
             user: userRes.data
+          })
+        }
+        else
+        {
+          setUserData({
+            token:undefined,
+            user:undefined,
           })
         }
       }

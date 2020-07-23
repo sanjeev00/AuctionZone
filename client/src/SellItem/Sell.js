@@ -3,8 +3,9 @@ import UserContext from '../Context/UserContext'
 import axios from 'axios'
 function Sell(props) {
     return (
-        <div class="row">
-            <div class="col-4 ">
+        <div className="container">
+        <div className="row justify-content-around align-items-center">
+            <div className="col-md-6 ">
                 <div className="jumbotron">
                     <div className="container">
                         <h1 className="display-4">Get a good price for your items</h1>
@@ -12,9 +13,10 @@ function Sell(props) {
                     </div>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-md-6">
                 <SellerForm></SellerForm>
             </div>
+        </div>
         </div>
     );
   }
@@ -30,6 +32,8 @@ class SellerForm extends React.Component
             cost:"",
             condition:"",
             seller:"",
+            uploaded:0,
+
 
         }
         this.handleItem = this.handleItem.bind(this)
@@ -66,7 +70,16 @@ class SellerForm extends React.Component
          method: 'POST',
          body: data,
         }).then(console.log("uccess"))*/
-        axios.post("/item/new",data,{headers:{'x-auth-token':this.context.userData.token}})
+        axios.post("/api/item/new",data,{headers:{'x-auth-token':this.context.userData.token},
+        onUploadProgress:progressEvent=>{
+            this.setState({uploaded:parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total))})
+            setTimeout(() => {
+                this.setState({uploaded:0})
+            }, 10000);
+        }
+    
+        
+    })
         .then(
         (res)=>{
             console.log("success")
@@ -80,18 +93,19 @@ class SellerForm extends React.Component
             <div>
                 <form onSubmit={this.handleItem}>
                     <div className="input-group mt-4">
-                        <input name='name' placeholder="Name" value={this.state.name} onChange={this.onNameChange} /> 
+                        <input className="r-input" name='name' placeholder="Name" value={this.state.name} onChange={this.onNameChange} /> 
                     </div>
                     <div className="input-group mt-4">
-                    <input name='cost' placeholder="Cost" value={this.state.cost} onChange={this.onCostChange}/> 
+                    <input className="r-input" name='cost' placeholder="Cost" value={this.state.cost} onChange={this.onCostChange}/> 
                     </div>
                     <div className="input-group mt-4">
-                    <input name='condition' placeholder="condition" value={this.state.condition} onChange={this.onConditionChange}/> 
+                    <input className="r-input" name='condition' placeholder="condition" value={this.state.condition} onChange={this.onConditionChange}/> 
                     </div>
                     <div className="input-group mt-4">
                     <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
-                
+                    
                     </div>
+                    <Progress uploaded={this.state.uploaded} />
                     <button className="btn btn-primary mt-5">Submit</button>
                 </form>
             </div>
@@ -99,3 +113,24 @@ class SellerForm extends React.Component
     }
 } 
   export default Sell;
+
+
+  class Progress extends React.Component{
+
+    constructor(props)
+    {
+        super(props)
+
+    }
+    render()
+    {
+        return(
+            <div className="progress">
+            <div className="progress-bar progress-bar-striped progress-bar-animated" 
+            role="progressbar" aria-valuenow={this.props.uploaded} 
+            aria-valuemin="0" aria-valuemax="100" 
+            style={{width: `${this.props.uploaded}%` }}></div>
+            </div>
+        );
+    }
+  }

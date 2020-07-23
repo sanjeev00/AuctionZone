@@ -87,7 +87,7 @@ export default class SignUp extends Component {
     {
     console.log(this.state.username + this.state.password)
     
-    axios.post('/user/register',{'username':this.state.username,
+    axios.post('/api/user/register',{'username':this.state.username,
     'password':this.state.password,'mobile':this.state.mobile,'mail':this.state.mail}).then(res=>{
         if(res.status == 200)
         console.log('registration success');
@@ -119,18 +119,18 @@ export default class SignUp extends Component {
                 <h2>Register Here</h2>
                 <div className="input-group">
                    
-                <input name="uname" id="uname" onChange={this.onUsernameChange} value={this.state.username} placeholder="Username"/><p>{this.state.valid}</p>
+                <input className="r-input" name="uname" id="uname" onChange={this.onUsernameChange} value={this.state.username} placeholder="Username"/><p>{this.state.valid}</p>
                 </div>
                 <div className='input-group mt-2'>
 
-                <input name="Mobile" value={this.state.mobile} type="text" placeholder="Mobile" onChange={this.mobileChange} />
+                <input name="Mobile"  className="r-input" value={this.state.mobile} type="text" placeholder="Mobile" onChange={this.mobileChange} />
                 </div>
                 <div className='input-group mt-2'>
-                <input name="Email" value={this.state.mail} type="email" placeholder="Email" onChange={this.mailChange} />
+                <input name="Email" className="r-input" value={this.state.mail} type="email" placeholder="Email" onChange={this.mailChange} />
                 </div><div className='input-group mt-2'>
-                <input name="pass" value={this.state.password} type="password" placeholder="password" onChange={this.passwordChange}/></div>
+                <input name="pass" className="r-input" value={this.state.password} type="password" placeholder="password" onChange={this.passwordChange}/></div>
                 <div className='input-group mt-2'>
-                <input name="cpass" value={this.state.cpassword} type="password" placeholder="Confirm password" onChange={this.cpasswordChange}/></div>
+                <input name="cpass" className="r-input" value={this.state.cpassword} type="password" placeholder="Confirm password" onChange={this.cpasswordChange}/></div>
                 
                 <button className="btn btn-md btn-danger mt-4" onClick={this.onSubmit}>Sign Up</button>
                 

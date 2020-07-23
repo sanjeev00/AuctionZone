@@ -23,8 +23,11 @@ connection.once('open',()=>{
 
 const userRouter = require('./routes/user');
 const itemRouter = require('./routes/item');
-app.use('/user',userRouter);
-app.use('/item',itemRouter)
+const bidRouter  = require('./routes/bid')
+
+app.use('/api/user',userRouter);
+app.use('/api/item',itemRouter);
+app.use('/api/bid',bidRouter);
 app.use(fileUpload());
 app.use('/public', express.static(__dirname + '/public'));
 app.use(express.static('./client/build'));

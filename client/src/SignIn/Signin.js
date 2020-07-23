@@ -32,14 +32,15 @@ export default class SignIn extends Component {
   }
   onSubmit(e)
   {
-    axios.post("/user/login",{username:this.state.username,password:this.state.password})
+    axios.post("/api/user/login",{username:this.state.username,password:this.state.password})
     .then(res=>{
       if(res.status==200)
       {
         console.log(res.data)
         localStorage.setItem('auth-token',res.data.token)
         this.context.setUserData({
-          token:res.data.token
+          token:res.data.token,
+          user:res.data
         })
         this.props.history.push("/")        
         
@@ -60,10 +61,10 @@ export default class SignIn extends Component {
                 <h2>Sign In</h2>
                 <div className="input-group">
                    
-                <input name="uname" id="uname" onChange={this.onUsernameChange} value={this.state.username} placeholder="Username"/>
+                <input name="uname" className="r-input" id="uname" onChange={this.onUsernameChange} value={this.state.username} placeholder="Username"/>
                 </div>
                 <div className='input-group mt-2'>
-                <input name="pass" type="password" placeholder="password" onChange={this.onPassChange}/></div>
+                <input name="pass" type="password" className="r-input" placeholder="password" onChange={this.onPassChange}/></div>
                 <button className="btn btn-md btn-danger mt-4" onClick={this.onSubmit}>Sign in</button>
           </div>
       </div>

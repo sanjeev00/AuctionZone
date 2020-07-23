@@ -1,10 +1,20 @@
 import React from 'react';
 import UserContext from  '../Context/UserContext.js'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom"; 
+
+
+
+
 function Signedout()
 {
   return(
   <div className="navbar-nav ">
-  <a className="nav-link nav-item" href="sell" >Sell</a>
+  <Link to='/' style={{ textDecoration: 'none' ,color:'unset'}}><a className="nav-link nav-item" href="#" >Sell</a></Link>
   <a className="nav-link nav-item" href="signin">Sign in</a>
   <a className="nav-link nav-item" href="signup">Sign Up</a> 
   </div>

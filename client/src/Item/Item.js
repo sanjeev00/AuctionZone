@@ -10,13 +10,13 @@ import {
 
 function Item(props) {
     return (
-      <Link to={{pathname:'item' ,state:{id:props.uid}}} >      <div className="card icard">
+      <Link to={{pathname:'item' ,state:{id:props.uid}}}  style={{ textDecoration: 'none' ,color:'unset'}} >      <div className="card icard">
           <img src={props.img} className="card-img-top" alt="..."/>
 
             <div className="card-body">
             <h5 className="card-title">{props.name}</h5>
-            <h5 className="card-title">Starting from ${props.cost}</h5>
-            <div className="card-subtitle">{props.cond}</div>
+            <h5 className="card-title float-right ">Starting from ${props.cost}</h5>
+            <div className="card-subtitle ">{props.cond}</div>
         </div>
 
       </div>

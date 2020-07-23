@@ -53,14 +53,15 @@ router.route('/update/:id').post((req,res)=>{
 );
 
 router.route('/new').post(auth,async (req,res)=>{
-    console.log(req.files)
+
     const data =  req.body;
 
     const name = data.name;
-    console.log("name"+name)
+
     const cost  = Number(data.cost);
     const condition = data.condition;
     const seller = data.seller;
+    const sellerId = req.user;
     let imageFile = req.files.file;
     let filenm =  Math.random().toString(36).substring(7);
     var dir = path.resolve(__dirname, '..')
@@ -71,7 +72,7 @@ router.route('/new').post(auth,async (req,res)=>{
         }
         const image = `public/${filenm}.jpg`;
 
-        const newItem = new Item({name,cost,condition,seller,image})
+        const newItem = new Item({name,cost,condition,seller,image,sellerId})
         newItem.save().then(()=>res.json('Item added!'));
     })
 

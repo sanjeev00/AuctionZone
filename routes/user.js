@@ -26,7 +26,7 @@ router.route('/register').post(async (req,res)=>{
 })
 router.route('/userData').get(auth,async (req,res)=>{
     console.log(req.user)
-    const user = await User.findById(req.user)
+    const user = await User.findById(req.user).select("-password")
     return res.json(user)
 })
 router.route('/login').post(async (req,res)=>{
