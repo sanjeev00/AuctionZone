@@ -18,6 +18,23 @@ router.route('/:productId').get((req,res)=>{
 
 })
 
+
+router.route('/close').post(auth,async(req,res)=>{
+    const userId = req.user;
+    const id = req.body.id;
+    Item.findById(id).then(async item=>{
+        if(userId==item.sellerId) {
+            item.bidOpen = false;
+            await item.save();
+            return res.json(true);
+        }
+        else
+            return res.status(400).json({error:"unable to close bid"});
+
+    })
+})
+
+
 router.route('/add').post(auth,async (req,res)=>{
     const userId = req.user;
     const productId = req.body.productId;
@@ -27,6 +44,8 @@ router.route('/add').post(auth,async (req,res)=>{
 
     console.log(productId,bidTime)
     Item.findById(productId).then(async item=>{
+        if(item.sellerId == userId)
+            return res.status(400).json({success:false,latestBid:item.latestBid});
         if(item.bidOpen)
         {
             console.log(cost+" "+item.latestBid)
@@ -41,7 +60,7 @@ router.route('/add').post(auth,async (req,res)=>{
 
             }
             else
-                return res.status(400).send(false)
+                return res.status(400).json({success:false,lastBid:item.latestBid})
         }
 
     })

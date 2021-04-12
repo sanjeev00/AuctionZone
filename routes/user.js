@@ -4,7 +4,10 @@ const jwt = require('jsonwebtoken');
 let User = require('../models/user.model')
 const auth = require('../middleware/auth')
 router.route('/').get((req,res)=>{
-    User.find().select("-password").then(users=>res.json(users)).catch(err=>res.status(400).json('Error: '+err));
+    User.find().select("-password")
+        .then(users=>res.json(users))
+        .catch(err=>res.status(400)
+        .json('Error: '+err));
 });
 
 router.route('/register').post(async (req,res)=>{
@@ -25,7 +28,6 @@ router.route('/register').post(async (req,res)=>{
     }
 })
 router.route('/userData').get(auth,async (req,res)=>{
-    console.log(req.user)
     const user = await User.findById(req.user).select("-password")
     return res.json(user)
 })

@@ -27,12 +27,12 @@ class  Carousel extends React.Component {
           <div className="carousel-item active ">
               <img src={this.state.img} className="d-block w-100" alt="..." />
           </div>
-          <div className="carousel-item">
+          {/* <div className="carousel-item">
             <img src="tv.jpg" className="d-block w-100" alt="..." />
-          </div>
+           </div>
           <div className="carousel-item">
             <img src="flat.jpg" className="d-block w-100" alt="..."/>
-          </div>
+          </div> */}
         </div>
       </div>
     );

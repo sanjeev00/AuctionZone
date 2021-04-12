@@ -36,6 +36,7 @@ function App() {
         null,{headers:{'x-auth-token':token}})
         if(tokenRes.data){
           const userRes = await axios.get("/api/user/userData",{headers:{'x-auth-token':token}})
+          console.log(new Date().getTime())
           setUserData({
             token,
             user: userRes.data

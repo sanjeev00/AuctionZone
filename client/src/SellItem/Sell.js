@@ -33,7 +33,7 @@ class SellerForm extends React.Component
             condition:"",
             seller:"",
             uploaded:0,
-
+            showProgress:false,
 
         }
         this.handleItem = this.handleItem.bind(this)
@@ -65,7 +65,7 @@ class SellerForm extends React.Component
         data.append('seller',this.state.seller)
         data.append('file', this.uploadInput.files[0]);
         data.append('filename',"prodimage1");
-    
+        this.setState({showProgress:true});
         /*fetch('http://localhost:8000/item/new', {
          method: 'POST',
          body: data,
@@ -73,9 +73,10 @@ class SellerForm extends React.Component
         axios.post("/api/item/new",data,{headers:{'x-auth-token':this.context.userData.token},
         onUploadProgress:progressEvent=>{
             this.setState({uploaded:parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total))})
-            setTimeout(() => {
-                this.setState({uploaded:0})
-            }, 10000);
+            if(progressEvent.loaded==progressEvent.total)
+            {
+                this.setState({uploaded:0,showProgress:false})
+            }
         }
     
         
@@ -105,7 +106,8 @@ class SellerForm extends React.Component
                     <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
                     
                     </div>
-                    <Progress uploaded={this.state.uploaded} />
+                    {this.state.showProgress &&
+                    <Progress uploaded={this.state.uploaded} />}
                     <button className="btn btn-primary mt-5">Submit</button>
                 </form>
             </div>

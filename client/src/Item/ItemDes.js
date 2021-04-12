@@ -12,19 +12,34 @@ class  ItemDes extends Component{
             data: {},
             bidmodal:false,
             logged:true,
+            spinner:true
         }
-        
         axios.get('/api/item/'+this.props.uid).then(res=>{
-        this.setState({data:res.data})
+        this.setState({data:res.data,spinner:false})
 
     })
         this.closeModal = this.closeModal.bind(this)
         this.placeBid = this.placeBid.bind(this)
+        
     }
     closeModal()
     {
         this.setState({bidmodal:false})
     }
+
+    closeItem = (e)=>
+    {
+        
+        axios.post('/api/bid/close',{id:this.props.uid},{headers:{'x-auth-token':this.context.userData.token}})
+            .then(res=>{                    
+                
+            }).catch(err => {
+                if (err.response.status==400) {
+                this.setState({msg:"Cannot close bid"})
+            }})   
+    }
+
+
     placeBid()
     {
         if(this.context.userData.user===undefined)
@@ -36,8 +51,19 @@ class  ItemDes extends Component{
     }
 
 
+
     render()
     {
+        console.log(this.context.userData,new Date().getTime())
+        if(this.state.spinner)
+        return(
+            <div className="card mt-5">
+            <div className='card-body'>
+        <div className="spinner-border" role="status">
+        </div>
+        </div>
+        </div>
+      )
         return(
         <div className="card mt-5">
             <div className='card-body'>
@@ -50,8 +76,14 @@ class  ItemDes extends Component{
         <div className="py-3">
         <h4 className="card-text"> Starting Price <span style={{color:'darkblue'}}>${this.state.data.cost}</span> </h4>
         </div>
-                <button className='btn  btn-primary' onClick={this.placeBid}>Place Bid</button>
-                { this.state.bidmodal? <BidModal closeModal={this.closeModal} />:null}
+                {this.state.data.bidOpen?                
+                this.context.userData.user!=null && this.context.userData.user._id
+                ===this.state.data.sellerId ?
+                <button className='btn btn-danger' onClick={this.closeItem} >Close Bid</button>
+                :<button className='btn  btn-primary' onClick={this.placeBid}>Place Bid</button>
+                :<p className="alert alert-danger">Bidding closed</p>} 
+
+                { this.state.bidmodal? <BidModal closeModal={this.closeModal} data={this.state.data}/>:null}
                 {!this.state.logged ?<Redirect to='/signin'></Redirect>:null}
                 </div>
             </div>
@@ -62,11 +94,16 @@ class  ItemDes extends Component{
 
 
 class BidModal extends Component{
+    static contextType = UserContext
     constructor(props)
     {
         super(props)
         this.state={show:true,
-                    amount:500            
+                    amount: Math.max(this.props.data.latestBid,this.props.data.cost)+1,
+                    latestBid:Math.max(this.props.data.latestBid,this.props.data.cost),
+                    showError:false,
+                    error:""
+                                
             }
         this.handleClose = this.handleClose.bind(this)
         this.changeAmount =this.changeAmount.bind(this)
@@ -74,11 +111,34 @@ class BidModal extends Component{
 
     handleClose()
     {
-        this.setState({show:false})
+        if(this.state.amount<=this.state.latestBid)
+        {
+            this.setState({error:"Bid must be greater than latest bid "+this.state.latestBid,showError:true})
+        }
+        else
+        {
+            const data = {productId:this.props.data._id,
+                    user:this.context.userData.user.username,cost:this.state.amount}
+
+            axios.post('/api/bid/add',data,{headers:{'x-auth-token':this.context.userData.token}})
+            .then(res=>{
+                this.props.closeModal();
+                    
+                    
+                
+            }).catch(err => {
+                if (err.response.status==400) {
+                    this.setState({latestBid:err.response.data.lastBid})
+                    this.setState({error:"Bid must be greater than latest bid "+this.state.latestBid,showError:true})
+
+        }})
+        //this.setState({show:false})
+    }
     }
     changeAmount(e)
     {
         this.setState({amount:e.target.value})
+        this.setState({showError:false})
     }
     render()
     {
@@ -89,9 +149,13 @@ class BidModal extends Component{
             </Modal.Header>
             <Modal.Body>Place bid for 
                 <input type='number' value={this.state.amount} className="form-control" onChange={this.changeAmount} />
+                {this.state.showError?
+                <div className="alert alert-danger my-3" role="alert" >
+                    {this.state.error}
+                </div>:null }
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleClose}>
+              <Button variant="secondary" onClick={this.props.closeModal}>
                 Cancel
               </Button>
               <Button variant="primary" onClick={this.handleClose}>
@@ -102,10 +166,6 @@ class BidModal extends Component{
       )
     }
 
-
-
 }
 
-
 export default ItemDes;
-

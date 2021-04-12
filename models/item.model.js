@@ -31,10 +31,12 @@ const itemSchema  = new Schema({
     latestBid:{
         type:Number,
         default: 0,
+        required:true
     },
     bidOpen:{
         type:Boolean,
         default: true,
+        required:true
     }
 
 

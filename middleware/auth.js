@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const fileUpload = require('express-fileupload')
 
 
 const auth = (req, res, next)=>{
