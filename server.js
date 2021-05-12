@@ -43,6 +43,7 @@ server.listen(4200);
 app.listen(port,()=>{
     console.log("server is running")
 })
+console.log(port)
 app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build",
         "index.html"));
