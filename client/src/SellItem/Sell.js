@@ -5,7 +5,7 @@ function Sell(props) {
     return (
         <div className="container">
         <div className="row justify-content-around align-items-center">
-            <div className="col-md-6 ">
+            <div className="col-md-6 col-sm-12 ">
                 <div className="jumbotron">
                     <div className="container">
                         <h1 className="display-4">Get a good price for your items</h1>
@@ -66,10 +66,7 @@ class SellerForm extends React.Component
         data.append('file', this.uploadInput.files[0]);
         data.append('filename',"prodimage1");
         this.setState({showProgress:true});
-        /*fetch('http://localhost:8000/item/new', {
-         method: 'POST',
-         body: data,
-        }).then(console.log("uccess"))*/
+       
         axios.post("/api/item/new",data,{headers:{'x-auth-token':this.context.userData.token},
         onUploadProgress:progressEvent=>{
             this.setState({uploaded:parseInt(Math.round((progressEvent.loaded*100)/progressEvent.total))})
@@ -78,7 +75,6 @@ class SellerForm extends React.Component
                 this.setState({uploaded:0,showProgress:false})
             }
         }
-    
         
     })
         .then(

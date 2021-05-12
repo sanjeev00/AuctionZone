@@ -4,19 +4,20 @@ const jwt = require('jsonwebtoken');
 let Bid = require('../models/bid.model')
 let Item = require('../models/item.model')
 const auth = require('../middleware/auth')
-
-
+const {makebid} = require('../sockethelper')
 
 router.route('/:productId').get((req,res)=>{
     Bid.find({'productId':req.params.productId}).then(bid=>{
-        if(bid.length===0)
-        {
-            return res.json(false);
-        }
+
         res.json(bid)
     }).catch(err=>res.status(400).json('Error: '+err))
 
 })
+
+
+
+
+
 
 
 router.route('/close').post(auth,async(req,res)=>{
@@ -56,7 +57,11 @@ router.route('/add').post(auth,async (req,res)=>{
                 await item.save()
                 console.log(typeof (productId),typeof(bidTime))
                 const newBid = new Bid({cost,user,productId,userId,bidTime})
-                newBid.save().then(()=>res.json(newBid));
+                newBid.save().then(()=> {
+                    makebid(newBid)
+                    res.json(newBid)
+                });
+
 
             }
             else

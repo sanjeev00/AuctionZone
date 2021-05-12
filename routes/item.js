@@ -4,12 +4,29 @@ const auth = require('../middleware/auth')
 const fileUpload = require('express-fileupload')
 const express  = require('express')
 var path = require('path');
+const admin = require('firebase-admin');
+
+
+
+
+var serviceAccount = require("../admin.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: "where-2f226.appspot.com"
+
+});
+
+var bucket = admin.storage().bucket();
+
 
 
 
 router.use(fileUpload())
 router.route('/').get((req,res)=>{
     Item.find().then(items=>res.json(items)).catch(err=>res.status(400).json('Error: '+err));
+
+
 });
 
 router.route('/add').post((req,res)=>{
@@ -65,15 +82,25 @@ router.route('/new').post(auth,async (req,res)=>{
     let imageFile = req.files.file;
     let filenm =  Math.random().toString(36).substring(7);
     var dir = path.resolve(__dirname, '..')
-    console.log(`${dir}/public/${filenm}.jpg`)
-    imageFile.mv(`${dir}/public/${filenm}.jpg`,function(err){
+
+
+     imageFile.mv(`${dir}/public/${filenm}.jpg`,function(err){
         if(err){
             return res.status(400).send(err);
         }
-        const image = `public/${filenm}.jpg`;
 
-        const newItem = new Item({name,cost,condition,seller,image,sellerId})
-        newItem.save().then(()=>res.json('Item added!'));
+         bucket.upload(`${dir}/public/${filenm}.jpg`,{
+             destination: filenm+'.jpg',
+             public:true,
+         }).then(data=>{
+
+             const image = "https://storage.googleapis.com/where-2f226.appspot.com/" + data[0].metadata.name
+            //console.log(data)
+             const newItem = new Item({name,cost,condition,seller,image,sellerId})
+             newItem.save().then(()=>res.json('Item added!'));
+
+         })
+
     })
 
 })

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Carousel from '../Carousel/Carousel'
 import ItemDes from '../Item/ItemDes'
 import axios from 'axios'
+import { io } from "socket.io-client";
 
 import ItemBid from '../Item/ItemBid'
 import { Redirect } from 'react-router-dom';
@@ -10,22 +11,21 @@ class  ItemView extends Component {
     constructor(props)
     {
         super(props)
+        let socket = {}
         if(!this.props.location.state)
         {
             this.state={
                 redirect:true,
+               
             }
         }
         else{
         this.state = {
             uid : this.props.location.state.id,
-            
+            bids:[]
         }
 
-        axios.get('/api/bid/'+this.state.uid).then(res=>{
-            this.setState({bids:res.data})
-        })
-
+       
 
         }
     }
@@ -33,8 +33,31 @@ class  ItemView extends Component {
   
     componentDidMount() {
         
+        axios.get('/api/bid/'+this.state.uid).then(res=>{
+            this.setState({bids:res.data},bidSocket)
+        })
+
+        const bidSocket =()=>{
+        this.socket = io("127.0.0.1:4200",{query:{room:this.state.uid}});
+        this.socket.on('bid',(bid)=>{
+            let src = '/notify.mp3'
+            let audio = new Audio(src);
+            audio.play();
+            let bids = this.state.bids
+            console.log(bids)
+            bids.push({ _id: bid.id, user: bid.user, cost: bid.cost })
+            this.setState({bids})
+            console.log('new bid for '+bid)
+        })
+        }
     }
     
+
+    componentWillUnmount()
+    {
+        this.socket.close()
+    }
+
     render()
     {
         if(this.state.redirect)
@@ -56,7 +79,7 @@ class  ItemView extends Component {
         <div className="row justify-content-center">
                 
                 {
-                this.state.bids?
+                this.state.bids.length>0?
                 
                 this.state.bids.map((bid,i)=>
                  <ItemBid  cost={bid.cost} user={bid.user} key={bid._id}/>
