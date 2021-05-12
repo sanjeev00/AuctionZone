@@ -4,16 +4,18 @@ const mongoose = require('mongoose')
 const path = require('path');
 const bodyParser = require('body-parser');
 const { socketConnection } = require('./sockethelper');
-const server = require("http").createServer();
-
-socketConnection(server)
 const fileUpload = require('express-fileupload')
+const http =  require("http")
 require('dotenv').config();
 
 const app = express();
 
 
 const port  = process.env.PORT || 5000;
+const server =http.createServer(app);
+socketConnection(server)
+
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,10 +39,10 @@ app.use(fileUpload());
 app.use('/public', express.static(__dirname + '/public'));
 app.use(express.static('./client/build'));
 
-server.listen(4200);
 
 
-app.listen(port,()=>{
+
+server.listen(port,()=>{
     console.log("server is running")
 })
 console.log(port)

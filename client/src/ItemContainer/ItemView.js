@@ -38,7 +38,7 @@ class  ItemView extends Component {
         })
 
         const bidSocket =()=>{
-        this.socket = io(":4200",{query:{room:this.state.uid}});
+        this.socket = io("",{query:{room:this.state.uid}});
         this.socket.on('bid',(bid)=>{
             let src = '/notify.mp3'
             let audio = new Audio(src);
