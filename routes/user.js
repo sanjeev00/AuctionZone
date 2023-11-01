@@ -3,12 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 let User = require('../models/user.model')
 const auth = require('../middleware/auth')
-router.route('/').get((req,res)=>{
-    User.find().select("-password")
-        .then(users=>res.json(users))
-        .catch(err=>res.status(400)
-        .json('Error: '+err));
-});
 
 router.route('/register').post(async (req,res)=>{
     try {
@@ -37,7 +31,7 @@ router.route('/login').post(async (req,res)=>{
         if(!username || !password)
             return res.status(400)
         const user = await User.findOne({'username':username});
-        if(!user)
+        if(!user || !(await bcrypt.compare(password, user.password)))
             return res.status(400).json({msg:"invalid credtentials"})
         const token =  jwt.sign({id:user._id},process.env.JWT_TOKEN);
         res.json({
